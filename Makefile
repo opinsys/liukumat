@@ -12,5 +12,5 @@ js-watch:
 	watchify --debug index.js -o bundle.js
 
 deploy: js
-	git commit -m "Commit assets" bundle.js
+	git commit -m "Commit assets" bundle.js || true
 	git push origin master:gh-pages -f

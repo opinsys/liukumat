@@ -10,6 +10,7 @@ var flexEl = document.getElementById("flex");
 var timeRangeEl = document.getElementById("timerange");
 var DAY_LENGHT = 7.5;
 var OVERTIME_REGEXP = /YLITY/;
+var HOLIDAY = /ARKIPYH/;
 fileInput.onchange = handleInputFile;
 function handleInputFile() {
   if (!fileInput.files[0]) {
@@ -34,21 +35,24 @@ function parseEntriesToDays(data) {
     var date = hourEntry[0];
     var hours = hourEntry[6];
     var comment = hourEntry[5];
-    if (OVERTIME_REGEXP.test(comment)) {
-      console.log("Skipataan ylityötunnit");
-      console.log(hourEntry);
-      return;
-    }
     if (hours === undefined) {
-      console.warn("Bad hours for", hourEntry);
+      console.warn("Bad bad row", hourEntry);
       return;
     }
     var parsedHours = parseFloat(hours.replace(",", "."), 10);
+    if (OVERTIME_REGEXP.test(comment)) {
+      console.log(date, "ohitettavia ylityötunteja", parsedHours + "h:", hourEntry);
+      return;
+    }
     var dayObject = days[date] || (days[date] = {
       hours: 0,
-      entries: []
+      entries: [],
+      holiday: false
     });
     dayObject.date = moment(date, "DD.MM.YYYY");
+    if (!dayObject.holiday) {
+      dayObject.holiday = isWeekend(dayObject.date) || HOLIDAY.test(comment);
+    }
     dayObject.entries.push(hourEntry);
     dayObject.hours += parsedHours;
   });
@@ -65,9 +69,8 @@ function isWeekend(date) {
 }
 function analyzeFlex(days) {
   return _(days).values().reduce((function(currentHours, dayObject) {
-    if (isWeekend(dayObject.date)) {
-      console.log("Löytyi viikonlopputunteja jotka eivät ole merkitty ylityöksi. Merkitään suoraan plusliukumaksi");
-      console.log(dayObject);
+    if (dayObject.holiday) {
+      console.log(moment(dayObject.date).format("DD.MM.YYYY"), "Vapaapäivän extra tunteja", dayObject.hours, dayObject.entries);
       return currentHours + dayObject.hours;
     }
     var extraHours = dayObject.hours - DAY_LENGHT;
@@ -76,7 +79,7 @@ function analyzeFlex(days) {
 }
 
 
-//# sourceURL=/home/epeli/code/liukuma/index.js
+//# sourceURL=/home/epeli/code/liukumat/index.js
 },{"lodash":2,"moment":3}],2:[function(require,module,exports){
 (function (global){
 /**

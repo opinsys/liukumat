@@ -25,20 +25,22 @@ function handleInputFile() {
 
     Papa.parse(fileInput.files[0], {
         complete: function(results) {
-            // first row is header, skip it
-            var days = parseEntriesToDays(results.data.slice(1));
-
-            var startDate = findDate(days, "min");
-            var endDate = findDate(days, "max");
-
-            daysEl.innerHTML = Object.keys(days).length;
-            flexEl.innerHTML = analyzeFlex(days);
-
-            timeRangeEl.innerHTML = `${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}`;
-
+            renderDataToDOM(results.data);
         }
     });
+}
 
+function renderDataToDOM(data) {
+    // first row is header, skip it
+    var days = parseEntriesToDays(data.slice(1));
+
+    var startDate = findDate(days, "min");
+    var endDate = findDate(days, "max");
+
+    daysEl.innerHTML = Object.keys(days).length;
+    flexEl.innerHTML = analyzeFlex(days);
+
+    timeRangeEl.innerHTML = `${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}`;
 }
 
 function parseEntriesToDays(data) {
@@ -73,9 +75,7 @@ function parseEntriesToDays(data) {
 }
 
 function findDate(days, method) {
-    return _(days).values()[method](function(dateObject) {
-        return dateObject.date.toDate();
-    }).date;
+    return _(days).values()[method]((dateObject) => dateObject.date.toDate()).date;
 }
 
 function isWeekend(date) {
@@ -85,7 +85,7 @@ function isWeekend(date) {
 
 
 function analyzeFlex(days) {
-    return _(days).values().reduce(function(currentHours, dayObject) {
+    return _(days).values().reduce((currentHours, dayObject) => {
         if (isWeekend(dayObject.date)) {
             console.log("Löytyi viikonlopputunteja jotka eivät ole merkitty ylityöksi. Merkitään suoraan plusliukumaksi");
             console.log(dayObject);

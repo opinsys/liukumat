@@ -13,6 +13,7 @@ var DAY_LENGHT = 7.5;
 
 // Not trusting Ös here... Good enough!
 var OVERTIME_REGEXP = /YLITY/;
+var HOLIDAY = /ARKIPYH/; // other than sat or sun
 
 
 fileInput.onchange = handleInputFile;
@@ -57,21 +58,34 @@ function parseEntriesToDays(data) {
         var hours = hourEntry[6];
         var comment = hourEntry[5];
 
-        if (OVERTIME_REGEXP.test(comment)) {
-            console.log("Skipataan ylityötunnit");
-            console.log(hourEntry);
-            return;
-        }
-
         if (hours === undefined) {
-            console.warn("Bad hours for", hourEntry);
+            console.warn("Bad bad row", hourEntry);
             return;
         }
 
         var parsedHours = parseFloat(hours.replace(",", "."), 10);
 
-        var dayObject = days[date] || (days[date] = { hours: 0, entries: [] });
+        if (OVERTIME_REGEXP.test(comment)) {
+            console.log(date, "ohitettavia ylityötunteja", parsedHours +"h:", hourEntry);
+            return;
+        }
+
+
+
+        var dayObject = days[date] || (days[date] = {
+            hours: 0,
+            entries: [],
+            holiday: false
+        });
+
         dayObject.date = moment(date, "DD.MM.YYYY");
+
+        if (!dayObject.holiday) {
+            // Any of the comments in entries may make this day to a holiday.
+            // Do not remove if once set.
+            dayObject.holiday = isWeekend(dayObject.date) || HOLIDAY.test(comment);
+        }
+
         dayObject.entries.push(hourEntry);
         dayObject.hours += parsedHours;
     });
@@ -92,9 +106,12 @@ function isWeekend(date) {
 
 function analyzeFlex(days) {
     return _(days).values().reduce((currentHours, dayObject) => {
-        if (isWeekend(dayObject.date)) {
-            console.log("Löytyi viikonlopputunteja jotka eivät ole merkitty ylityöksi. Merkitään suoraan plusliukumaksi");
-            console.log(dayObject);
+        if (dayObject.holiday) {
+            console.log(
+                moment(dayObject.date).format("DD.MM.YYYY"),
+                "Vapaapäivän extra tunteja",
+                dayObject.hours, dayObject.entries
+            );
             return currentHours + dayObject.hours;
         }
 

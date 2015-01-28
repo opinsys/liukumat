@@ -31,6 +31,10 @@ function handleInputFile() {
 }
 
 function renderDataToDOM(data) {
+    // The row entries should look like this:
+    // 26.01.2015,Tuotekehitys,Viestintä 2014,"",Kehitys,ajax notifkaatio,"7,5",No,No,No,Esa-Matti,Suuronen,"",Yes
+
+
     // first row is header, skip it
     var days = parseEntriesToDays(data.slice(1));
 

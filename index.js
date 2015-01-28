@@ -32,6 +32,7 @@ function handleInputFile() {
 
 function renderDataToDOM(data) {
     // The row entries should look like this:
+    // Date,Client,Project,Project Code,Task,Notes,Hours,Billable?,Invoiced?,Approved?,First Name,Last Name,Department,Employee?
     // 26.01.2015,Tuotekehitys,Viestintä 2014,"",Kehitys,ajax notifkaatio,"7,5",No,No,No,Esa-Matti,Suuronen,"",Yes
 
 
@@ -46,6 +47,7 @@ function renderDataToDOM(data) {
 
     timeRangeEl.innerHTML = `${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}`;
 }
+
 
 function parseEntriesToDays(data) {
     var days = {};

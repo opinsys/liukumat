@@ -13,9 +13,9 @@
         </p>
 
         <p>
-            Laskuri olettaa että jokaiselle päivälle jolle on merkitty jotain
-            tunteja niitä olisi tullut tehdä tehdä 7.5h. Tämän ylittyessä tai
-            alittuessa tunnit merkitään liukumiin.
+            Laskuri olettaa että jokaiselle päivälle, jolle tehty merkintä,
+            olisi tullut merkitä 7,5 tuntia. Tästä yli- tai alijääneet tunnit
+            lasketaan liukumaan.
         </p>
 
         <p>
@@ -25,31 +25,31 @@
         <ul>
             <li>
                 Päiville jotka olet pitänyt kokonaan liukumavapaana on merkitty
-                tunneiksi 0h johonkin taskiin, jos sitä ei ole merkitty päivästä ei
-                merkitä negatiivista saldoa
+                tunneiksi 0 johonkin tehtävään. Jos mitään ei ole merkitty
+                silloin päivää ei lasketa liukumaan lainkaan
             </li>
 
             <li>
                 Ylityötunteihin on lisätty kommenttikenttään merkkijono
-                <em>YLITYÖ</em> (pitää olla siis capseilla). Tällöin niitä
-                tunteja ei oteta huomioon laskennassa lainkaan
+                <em>YLITYÖ</em> (pitää olla capseilla). Tällöin ne ohitetaan
+                liukuman laskennassa
             </li>
 
             <li>
-                Arkipyhinä sisään tehtyihin liukumiin on kommenttiin merkitty
-                <em>ARKIPYHÄ</em>. Muutoin päivä tulkitaan normaalina
-                työpäivänä
+                Arkipyhinä kirjattuihin tunteihin on kommenttiin lisätty
+                merkkijono <em>ARKIPYHÄ</em>. Muutoin päivä tulkitaan
+                normaalina työpäivänä
             </li>
 
             <li>
                 Viikonloppuina sekä arkipyhinä tehdyt tunnit tulkitaan suoraan
-                positiivisena saldona ellei niissä ole <em>YLITYÖ</em>
+                positiivisena liukumana ellei niissä ole <em>YLITYÖ</em>
                 merkintää
             </li>
 
             <li>
-                Harvestiin merkityt on merkitty vuosilomat ja sairaspoissaolot
-                7.5h pituisina. Puuttuvat merkinnät eivät haittaa
+                Harvestiin on merkitty vuosilomat ja sairaspoissaolot 7,5 tunnin
+                pituisina. Puuttuvat merkinnät eivät haittaa
             </li>
         </ul>
 

@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Harvest-liukumalaskuri</title>
+    </head>
+    <body>
+        <h1>Harvest-liukumalaskuri</h1>
+
+        <p>
+            Naivi liukumalaskuri joka ei ymmärrä Suomen lomapäivistä mitään,
+            mutta tämä toimii kuitenkin, jos seuraavat asiat täyttyvät
+            tuntimerkintöjesi osalta:
+        </p>
+
+        <ul>
+            <li>
+                Päiville jotka olet pitänyt kokonaan liukumavapaana on merkitty
+                tunneiksi 0h johonkin taskiin
+            </li>
+
+            <li>
+                Ylityötunteihin on lisätty kommenttikenttään merkkijono
+                <em>YLITYÖ</em> (pitää olla siis capseilla)
+            </li>
+
+        </ul>
+
+        <p>
+            Laskuri olettaa että jokaiselle päivälle jolloin on merkitty
+            tunteja tulisi tehdä 7.5h. Tämän ylittyessä tai alittuessa tunnit
+            merkitään liukumiin.
+        </p>
+
+        <h2>Huomioita</h2>
+
+        <ul>
+            <li>
+                Jos olet merkinnyt lauantaille tai sunnuntaille tunteja eikä
+                niissä ole kommentissä <em>YLITYÖ</em>-merkintää ne lasketaan
+                suoraan liukumiksi plussana
+            </li>
+            <li>
+                Harvestiin merkityt lomat ja sairaspoissaolot eivät haittaa
+                kunhan niiden pituudeksi on merkitty 7.5h
+            </li>
+
+        </ul>
+
+        <h2>Käyttö</h2>
+
+        <p>
+            Hae Harvestista CSV-muotoinen tiedosto "My Time Report" -sivulta ja
+            lataa se tähän. Oikeasta yläreunasta voi valita aikavälin johon voi
+            syöttää koko työsopimuksen keston.
+        </p>
+
+        <input type=file id=file accept=".csv">
+
+        <p>
+            Ajalta: <span id=timerange></span>
+        </p>
+
+        <p>
+            Työpäiviä: <span id=days></span>
+        </p>
+
+        <p>
+           Kertyneitä liukumatunteja: <span id=flex></span>
+        </p>
+
+        <script src="papaparse.js" charset="utf-8"></script>
+        <script src="bundle.js" charset="utf-8"></script>
+    </body>
+</html>

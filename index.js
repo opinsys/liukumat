@@ -9,7 +9,7 @@ var daysEl = document.getElementById("days");
 var flexEl = document.getElementById("flex");
 var timeRangeEl = document.getElementById("timerange");
 
-var DAY_LENGHT = 7.5;
+var DAY_LENGTH = 7.5;
 
 // Not trusting Ös here... Good enough!
 var OVERTIME_REGEXP = /YLITY/;
@@ -115,7 +115,7 @@ function analyzeFlex(days) {
             return currentHours + dayObject.hours;
         }
 
-        var extraHours = dayObject.hours - DAY_LENGHT;
+        var extraHours = dayObject.hours - DAY_LENGTH;
         return currentHours + extraHours;
     }, 0);
 }

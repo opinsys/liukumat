@@ -11,8 +11,7 @@ var timeRangeEl = document.getElementById("timerange");
 
 var DAY_LENGHT = 7.5;
 
-
-// No trusting Ös here... Good enough!
+// Not trusting Ös here... Good enough!
 var OVERTIME_REGEXP = /YLITY/;
 
 
@@ -44,7 +43,6 @@ function handleInputFile() {
     });
 
 }
-
 
 function parseEntriesToDays(data) {
     var days = {};

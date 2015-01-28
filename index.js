@@ -25,9 +25,6 @@ function handleInputFile() {
 
     Papa.parse(fileInput.files[0], {
         complete: function(results) {
-            console.log("RAW", results.data);
-
-
             // first row is header, skip it
             var days = parseEntriesToDays(results.data.slice(1));
 
@@ -53,7 +50,8 @@ function parseEntriesToDays(data) {
         var comment = hourEntry[5];
 
         if (OVERTIME_REGEXP.test(comment)) {
-            console.log("Skipataan ylityötunnit", hourEntry);
+            console.log("Skipataan ylityötunnit");
+            console.log(hourEntry);
             return;
         }
 
@@ -85,10 +83,12 @@ function isWeekend(date) {
     return dayOfWeek === "Sun" || dayOfWeek === "Sat";
 }
 
+
 function analyzeFlex(days) {
     return _(days).values().reduce(function(currentHours, dayObject) {
         if (isWeekend(dayObject.date)) {
-            console.log("Viikonlopputunteja jotka eivät ole ylityötä. Merkitään suoraan plusliukumaksi", dayObject);
+            console.log("Löytyi viikonlopputunteja jotka eivät ole merkitty ylityöksi. Merkitään suoraan plusliukumaksi");
+            console.log(dayObject);
             return currentHours + dayObject.hours;
         }
 

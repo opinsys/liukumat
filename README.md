@@ -7,6 +7,10 @@
 
     make
     make js-watch
-    xdg-open index.html
-    make deploy # stop the watcher
+    make server # in another terminal
+
+    # Deploying to http://opinsys.github.io/liukumat
+    # stop the watcher
+    # commit everything
+    make deploy
 

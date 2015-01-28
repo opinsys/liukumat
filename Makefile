@@ -14,3 +14,6 @@ js-watch:
 deploy: js
 	git commit -m "Commit assets" bundle.js || true
 	git push origin master:gh-pages -f
+
+server:
+	node_modules/.bin/live-server

@@ -17,7 +17,6 @@ function handleInputFile() {
     return;
   }
   Papa.parse(fileInput.files[0], {complete: function(results) {
-      console.log("RAW", results.data);
       var days = parseEntriesToDays(results.data.slice(1));
       var startDate = findDate(days, "min");
       var endDate = findDate(days, "max");
@@ -33,7 +32,8 @@ function parseEntriesToDays(data) {
     var hours = hourEntry[6];
     var comment = hourEntry[5];
     if (OVERTIME_REGEXP.test(comment)) {
-      console.log("Skipataan ylityötunnit", hourEntry);
+      console.log("Skipataan ylityötunnit");
+      console.log(hourEntry);
       return;
     }
     if (hours === undefined) {
@@ -63,7 +63,8 @@ function isWeekend(date) {
 function analyzeFlex(days) {
   return _(days).values().reduce(function(currentHours, dayObject) {
     if (isWeekend(dayObject.date)) {
-      console.log("Viikonlopputunteja jotka eivät ole ylityötä. Merkitään suoraan plusliukumaksi", dayObject);
+      console.log("Löytyi viikonlopputunteja jotka eivät ole merkitty ylityöksi. Merkitään suoraan plusliukumaksi");
+      console.log(dayObject);
       return currentHours + dayObject.hours;
     }
     var extraHours = dayObject.hours - DAY_LENGHT;

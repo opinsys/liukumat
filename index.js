@@ -15,8 +15,10 @@ startHoursInput.value = localStorage.startHours || "";
 var DAY_LENGTH = 7.5;
 
 // Not trusting Ös here... Good enough!
-var OVERTIME_REGEXP = /YLITY/;
-var HOLIDAY = /ARKIPYH/; // other than sat or sun
+var COMMENT_FLAGS = {
+    OVERTIME: /YLITY/,
+    HOLIDAY: /ARKIPYH/ // other than sat or sun
+};
 
 
 fileInput.onchange = onChange;
@@ -98,7 +100,7 @@ function parseEntriesToDays(data) {
 
         var parsedHours = parseCommaFloat(hours);
 
-        if (OVERTIME_REGEXP.test(comment)) {
+        if (COMMENT_FLAGS.OVERTIME.test(comment)) {
             console.log(date, "ohitettavia ylityötunteja", parsedHours +"h:", hourEntry);
             return;
         }
@@ -116,7 +118,7 @@ function parseEntriesToDays(data) {
         if (!dayObject.holiday) {
             // Any of the comments in entries may make this day to a holiday.
             // Do not remove if once set.
-            dayObject.holiday = isWeekend(dayObject.date) || HOLIDAY.test(comment);
+            dayObject.holiday = isWeekend(dayObject.date) || COMMENT_FLAGS.HOLIDAY.test(comment);
         }
 
         dayObject.entries.push(hourEntry);

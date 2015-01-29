@@ -43,21 +43,31 @@ function renderDataToDOM(data, flexDays) {
 
 
     // first row is header, skip it
-    var days = parseEntriesToDays(data.slice(1));
+    var users = parseEntriesToDays(data.slice(1));
 
-    var startDate = findDate(days, "min");
-    var endDate = findDate(days, "max");
+    var results = "";
 
-    res.innerHTML= `
-        Aikaväli ${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}
-        Työpäivä ${Object.keys(days).length}
-        Kertyneitä liukumatunteja ${analyzeFlex(days) - flexDays * DAY_LENGTH}
-    `;
+    _.forEach(users, function(days, name) {
+        var startDate = findDate(days, "min");
+        var endDate = findDate(days, "max");
+
+        results += `
+            ${name}
+            Aikaväli ${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}
+            Työpäivä ${Object.keys(days).length}
+            Kertyneitä liukumatunteja ${analyzeFlex(days) - flexDays * DAY_LENGTH}
+
+        `;
+
+    });
+
+
+    res.innerHTML= results;
 }
 
 
 function parseEntriesToDays(data) {
-    var days = {};
+    var users = {};
 
     data.forEach(function(hourEntry) {
         var date = hourEntry[0];
@@ -68,6 +78,14 @@ function parseEntriesToDays(data) {
             console.warn("Bad bad row", hourEntry);
             return;
         }
+
+        var firstName = hourEntry[10];
+        var lastName = hourEntry[11];
+        var userKey = firstName + " " + lastName;
+
+        var days = users[userKey] || (users[userKey] = {});
+
+
 
         var parsedHours = parseFloat(hours.replace(",", "."), 10);
 
@@ -97,7 +115,7 @@ function parseEntriesToDays(data) {
     });
 
 
-    return days;
+    return users;
 }
 
 function findDate(days, method) {

@@ -121,8 +121,11 @@ function analyzeFlex(days) {
             return currentHours + dayObject.hours;
         }
 
-        var extraHours = dayObject.hours - DAY_LENGTH;
-        return currentHours + extraHours;
+        if (!dayObject.hours) {
+            console.error("EI tunteja päivälle " + moment(dayObject.date).format("DD.MM.YYYY"));
+        }
+
+        return currentHours + dayObject.hours - DAY_LENGTH;
     }, 0);
 }
 

@@ -5,29 +5,30 @@ var moment = require("moment");
 var _ = require("lodash");
 var Papa = window.Papa;
 var fileInput = document.getElementById("file");
-var daysEl = document.getElementById("days");
-var flexEl = document.getElementById("flex");
-var timeRangeEl = document.getElementById("timerange");
+var flexDaysInput = document.getElementById("flexdays");
+var res = document.getElementById("res");
+flexDaysInput.value = localStorage.flexDays || "";
 var DAY_LENGTH = 7.5;
 var OVERTIME_REGEXP = /YLITY/;
 var HOLIDAY = /ARKIPYH/;
-fileInput.onchange = handleInputFile;
-function handleInputFile() {
+fileInput.onchange = onChange;
+flexDaysInput.onkeyup = onChange;
+function onChange() {
+  var flexDays = parseInt(flexDaysInput.value, 10) || 0;
+  localStorage.flexDays = flexDaysInput.value;
   if (!fileInput.files[0]) {
     console.warn("No file");
     return;
   }
   Papa.parse(fileInput.files[0], {complete: function(results) {
-      renderDataToDOM(results.data);
+      renderDataToDOM(results.data, flexDays);
     }});
 }
-function renderDataToDOM(data) {
+function renderDataToDOM(data, flexDays) {
   var days = parseEntriesToDays(data.slice(1));
   var startDate = findDate(days, "min");
   var endDate = findDate(days, "max");
-  daysEl.innerHTML = Object.keys(days).length;
-  flexEl.innerHTML = analyzeFlex(days);
-  timeRangeEl.innerHTML = (startDate.format("DD.MM.YYYY") + " - " + endDate.format("DD.MM.YYYY"));
+  res.innerHTML = ("\n        Aikaväli " + startDate.format("DD.MM.YYYY") + " - " + endDate.format("DD.MM.YYYY") + "\n        Työpäivä " + Object.keys(days).length + "\n        Kertyneitä liukumatunteja " + (analyzeFlex(days) - flexDays * DAY_LENGTH) + "\n    ");
 }
 function parseEntriesToDays(data) {
   var days = {};
@@ -73,13 +74,15 @@ function analyzeFlex(days) {
       console.log(moment(dayObject.date).format("DD.MM.YYYY"), "Vapaapäivän extra tunteja", dayObject.hours, dayObject.entries);
       return currentHours + dayObject.hours;
     }
-    var extraHours = dayObject.hours - DAY_LENGTH;
-    return currentHours + extraHours;
+    if (!dayObject.hours) {
+      console.error("EI tunteja päivälle " + moment(dayObject.date).format("DD.MM.YYYY"));
+    }
+    return currentHours + dayObject.hours - DAY_LENGTH;
   }), 0);
 }
 
 
-//# sourceURL=/home/epeli/code/liukumat/index.js
+//# sourceURL=/home/epeli/code/liukuma/index.js
 },{"lodash":2,"moment":3}],2:[function(require,module,exports){
 (function (global){
 /**

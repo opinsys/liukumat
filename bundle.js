@@ -11,8 +11,10 @@ var res = document.getElementById("res");
 flexDaysInput.value = localStorage.flexDays || "";
 startHoursInput.value = localStorage.startHours || "";
 var DAY_LENGTH = 7.5;
-var OVERTIME_REGEXP = /YLITY/;
-var HOLIDAY = /ARKIPYH/;
+var COMMENT_FLAGS = {
+  OVERTIME: /YLITY/,
+  HOLIDAY: /ARKIPYH/
+};
 fileInput.onchange = onChange;
 flexDaysInput.onkeyup = onChange;
 startHoursInput.onkeyup = onChange;
@@ -57,7 +59,7 @@ function parseEntriesToDays(data) {
     var userKey = firstName + " " + lastName;
     var days = users[userKey] || (users[userKey] = {});
     var parsedHours = parseCommaFloat(hours);
-    if (OVERTIME_REGEXP.test(comment)) {
+    if (COMMENT_FLAGS.OVERTIME.test(comment)) {
       console.log(date, "ohitettavia ylityötunteja", parsedHours + "h:", hourEntry);
       return;
     }
@@ -68,7 +70,7 @@ function parseEntriesToDays(data) {
     });
     dayObject.date = moment(date, "DD.MM.YYYY");
     if (!dayObject.holiday) {
-      dayObject.holiday = isWeekend(dayObject.date) || HOLIDAY.test(comment);
+      dayObject.holiday = isWeekend(dayObject.date) || COMMENT_FLAGS.HOLIDAY.test(comment);
     }
     dayObject.entries.push(hourEntry);
     dayObject.hours += parsedHours;

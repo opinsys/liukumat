@@ -40,7 +40,7 @@ function renderDataToDOM(data, flexDays, startHours) {
     var flexHours = startHours;
     flexHours += analyzeFlex(days);
     flexHours -= flexDays * DAY_LENGTH;
-    results += ("\n            " + name + "\n            Aikaväli " + startDate.format("DD.MM.YYYY") + " - " + endDate.format("DD.MM.YYYY") + "\n            Työpäivä " + Object.keys(days).length + "\n            Kertyneitä liukumatunteja " + flexHours + "\n\n        ");
+    results += ("\n            " + name + "\n            Aikaväli " + startDate.format("DD.MM.YYYY") + " - " + endDate.format("DD.MM.YYYY") + "\n            Työpäiviä " + Object.keys(days).length + "\n            Kertyneitä liukumatunteja " + flexHours + "\n\n        ");
   });
   res.innerHTML = results;
 }

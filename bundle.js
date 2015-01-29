@@ -6,32 +6,44 @@ var _ = require("lodash");
 var Papa = window.Papa;
 var fileInput = document.getElementById("file");
 var flexDaysInput = document.getElementById("flexdays");
+var startHoursInput = document.getElementById("starthours");
 var res = document.getElementById("res");
 flexDaysInput.value = localStorage.flexDays || "";
+startHoursInput.value = localStorage.startHours || "";
 var DAY_LENGTH = 7.5;
 var OVERTIME_REGEXP = /YLITY/;
 var HOLIDAY = /ARKIPYH/;
 fileInput.onchange = onChange;
 flexDaysInput.onkeyup = onChange;
+startHoursInput.onkeyup = onChange;
 function onChange() {
   var flexDays = parseInt(flexDaysInput.value, 10) || 0;
   localStorage.flexDays = flexDaysInput.value;
+  localStorage.startHours = startHoursInput.value;
+  var startHours = parseCommaFloat(startHoursInput.value);
   if (!fileInput.files[0]) {
     console.warn("No file");
     return;
   }
   Papa.parse(fileInput.files[0], {complete: function(results) {
-      renderDataToDOM(results.data, flexDays);
+      renderDataToDOM(results.data, flexDays, startHours);
     }});
 }
-function renderDataToDOM(data, flexDays) {
-  var days = parseEntriesToDays(data.slice(1));
-  var startDate = findDate(days, "min");
-  var endDate = findDate(days, "max");
-  res.innerHTML = ("\n        Aikaväli " + startDate.format("DD.MM.YYYY") + " - " + endDate.format("DD.MM.YYYY") + "\n        Työpäivä " + Object.keys(days).length + "\n        Kertyneitä liukumatunteja " + (analyzeFlex(days) - flexDays * DAY_LENGTH) + "\n    ");
+function renderDataToDOM(data, flexDays, startHours) {
+  var users = parseEntriesToDays(data.slice(1));
+  var results = "";
+  _.forEach(users, function(days, name) {
+    var startDate = findDate(days, "min");
+    var endDate = findDate(days, "max");
+    var flexHours = startHours;
+    flexHours += analyzeFlex(days);
+    flexHours -= flexDays * DAY_LENGTH;
+    results += ("\n            " + name + "\n            Aikaväli " + startDate.format("DD.MM.YYYY") + " - " + endDate.format("DD.MM.YYYY") + "\n            Työpäivä " + Object.keys(days).length + "\n            Kertyneitä liukumatunteja " + flexHours + "\n\n        ");
+  });
+  res.innerHTML = results;
 }
 function parseEntriesToDays(data) {
-  var days = {};
+  var users = {};
   data.forEach(function(hourEntry) {
     var date = hourEntry[0];
     var hours = hourEntry[6];
@@ -40,7 +52,11 @@ function parseEntriesToDays(data) {
       console.warn("Bad bad row", hourEntry);
       return;
     }
-    var parsedHours = parseFloat(hours.replace(",", "."), 10);
+    var firstName = hourEntry[10];
+    var lastName = hourEntry[11];
+    var userKey = firstName + " " + lastName;
+    var days = users[userKey] || (users[userKey] = {});
+    var parsedHours = parseCommaFloat(hours);
     if (OVERTIME_REGEXP.test(comment)) {
       console.log(date, "ohitettavia ylityötunteja", parsedHours + "h:", hourEntry);
       return;
@@ -57,7 +73,7 @@ function parseEntriesToDays(data) {
     dayObject.entries.push(hourEntry);
     dayObject.hours += parsedHours;
   });
-  return days;
+  return users;
 }
 function findDate(days, method) {
   return _(days).values()[method]((function(dateObject) {
@@ -67,6 +83,9 @@ function findDate(days, method) {
 function isWeekend(date) {
   var dayOfWeek = moment(date).format("ddd");
   return dayOfWeek === "Sun" || dayOfWeek === "Sat";
+}
+function parseCommaFloat(numStr) {
+  return parseFloat(numStr.replace(",", "."), 10) || 0;
 }
 function analyzeFlex(days) {
   return _(days).values().reduce((function(currentHours, dayObject) {

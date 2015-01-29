@@ -6,9 +6,11 @@ var Papa = window.Papa;
 
 var fileInput = document.getElementById("file");
 var flexDaysInput = document.getElementById("flexdays");
+var startHoursInput = document.getElementById("starthours");
 var res = document.getElementById("res");
 
 flexDaysInput.value = localStorage.flexDays || "";
+startHoursInput.value = localStorage.startHours || "";
 
 var DAY_LENGTH = 7.5;
 
@@ -19,10 +21,13 @@ var HOLIDAY = /ARKIPYH/; // other than sat or sun
 
 fileInput.onchange = onChange;
 flexDaysInput.onkeyup = onChange;
+startHoursInput.onkeyup = onChange;
 
 function onChange() {
     var flexDays = parseInt(flexDaysInput.value, 10) || 0;
     localStorage.flexDays = flexDaysInput.value;
+    localStorage.startHours = startHoursInput.value;
+    var startHours = parseCommaFloat(startHoursInput.value);
 
     if (!fileInput.files[0]) {
         console.warn("No file");
@@ -31,12 +36,12 @@ function onChange() {
 
     Papa.parse(fileInput.files[0], {
         complete: function(results) {
-            renderDataToDOM(results.data, flexDays);
+            renderDataToDOM(results.data, flexDays, startHours);
         }
     });
 }
 
-function renderDataToDOM(data, flexDays) {
+function renderDataToDOM(data, flexDays, startHours) {
     // The row entries should look like this:
     // Date,Client,Project,Project Code,Task,Notes,Hours,Billable?,Invoiced?,Approved?,First Name,Last Name,Department,Employee?
     // 26.01.2015,Tuotekehitys,Viestintä 2014,"",Kehitys,ajax notifkaatio,"7,5",No,No,No,Esa-Matti,Suuronen,"",Yes
@@ -51,11 +56,15 @@ function renderDataToDOM(data, flexDays) {
         var startDate = findDate(days, "min");
         var endDate = findDate(days, "max");
 
+        var flexHours = startHours;
+        flexHours += analyzeFlex(days);
+        flexHours -= flexDays * DAY_LENGTH;
+
         results += `
             ${name}
             Aikaväli ${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}
             Työpäivä ${Object.keys(days).length}
-            Kertyneitä liukumatunteja ${analyzeFlex(days) - flexDays * DAY_LENGTH}
+            Kertyneitä liukumatunteja ${flexHours}
 
         `;
 
@@ -87,7 +96,7 @@ function parseEntriesToDays(data) {
 
 
 
-        var parsedHours = parseFloat(hours.replace(",", "."), 10);
+        var parsedHours = parseCommaFloat(hours);
 
         if (OVERTIME_REGEXP.test(comment)) {
             console.log(date, "ohitettavia ylityötunteja", parsedHours +"h:", hourEntry);
@@ -125,6 +134,10 @@ function findDate(days, method) {
 function isWeekend(date) {
     var dayOfWeek = moment(date).format("ddd");
     return dayOfWeek === "Sun" || dayOfWeek === "Sat";
+}
+
+function parseCommaFloat(numStr) {
+    return parseFloat(numStr.replace(",", "."), 10) || 0;
 }
 
 

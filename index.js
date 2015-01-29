@@ -65,7 +65,7 @@ function renderDataToDOM(data, flexDays, startHours) {
         results += `
             ${name}
             Aikaväli ${startDate.format("DD.MM.YYYY")} - ${endDate.format("DD.MM.YYYY")}
-            Työpäivä ${Object.keys(days).length}
+            Työpäiviä ${Object.keys(days).length}
             Kertyneitä liukumatunteja ${flexHours}
 
         `;

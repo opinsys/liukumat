@@ -9,8 +9,9 @@
     make js-watch
     make server # in another terminal
 
-    # Deploying to http://opinsys.github.io/liukumat
-    # stop the watcher
-    # commit everything
+## Deployment 
+
+stop the watcher and commit everything
+
     make deploy
 

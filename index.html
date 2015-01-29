@@ -24,12 +24,6 @@
 
         <ul>
             <li>
-                Päiville jotka olet pitänyt kokonaan liukumavapaana on merkitty
-                tunneiksi 0 johonkin tehtävään. Jos mitään ei ole merkitty
-                silloin päivää ei lasketa liukumaan lainkaan
-            </li>
-
-            <li>
                 Ylityötunteihin on lisätty kommenttikenttään merkkijono
                 <em>YLITYÖ</em> (pitää olla capseilla). Tällöin ne ohitetaan
                 liukuman laskennassa
@@ -83,23 +77,19 @@
             <li>
                 Lataa se tähän <input type=file id=file accept=".csv">
             </li>
+
+            <li>
+                Kokonaiset liukumapäivät jotka eivät ole Harvestissa <input type=text id=flexdays size=3>
+                <ul><li>
+                Tämä tarvitaan koska Harvest ei exportaa päiviä jolle on merkitty nolla tuntia
+                </li></ul>
+            </li>
         </ol>
 
-        <hr>
 
-        <p>
-            Aikaväli: <span id=timerange></span>
-        </p>
+        <pre id=res>
+        </pre>
 
-        <p>
-            Työpäiviä: <span id=days></span>
-        </p>
-
-        <p>
-           Kertyneitä liukumatunteja: <span id=flex></span>
-        </p>
-
-        <hr>
 
 
         <p>
